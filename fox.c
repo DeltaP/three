@@ -64,8 +64,9 @@ int main(int argc, char* argv[]) {
     LOCAL_MATRIX_T*  local_A;
     LOCAL_MATRIX_T*  local_B;
     LOCAL_MATRIX_T*  local_C;
-    int              n;
+    int              n, i;
     int              n_bar;
+    double start, finish, loc_elapsed, elapsed;
 
     void Setup_grid(GRID_INFO_T*  grid);
     void Fox(int n, GRID_INFO_T* grid, LOCAL_MATRIX_T* local_A,
@@ -95,8 +96,17 @@ int main(int argc, char* argv[]) {
 
     local_C = Local_matrix_allocate(n_bar);
     Order(local_C) = n_bar;
+for(i=0; i<100; i++) {
+    start = MPI_Wtime();
     Fox(n, &grid, local_A, local_B, local_C);
+    finish = MPI_Wtime();
+    loc_elapsed = finish-start;
+    MPI_Reduce(&loc_elapsed, &elapsed, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
+    if (my_rank == 0)
+      printf("Elapsed time = %e\n", elapsed);
+}
+    
     Print_matrix("The product is", local_C, &grid, n);
 
     Free_local_matrix(&local_A);
@@ -243,7 +253,7 @@ void Read_matrix(
                 coords[1] = grid_col;
                 MPI_Cart_rank(grid->comm, coords, &dest);
                     for (mat_col = 0; mat_col < Order(local_A); mat_col++)
-                          Entry(local_A, mat_row, mat_col) = n * mat_row + mat_col;
+                          Entry(local_A, mat_row, mat_col) = (n*mat_row + mat_col);
             }
         }
         free(temp);
