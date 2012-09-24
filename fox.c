@@ -57,7 +57,7 @@ void             Print_local_matrices(char* title, LOCAL_MATRIX_T* local_A,
                      GRID_INFO_T* grid);
 
 /*********************************************************/
-main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     int              p;
     int              my_rank;
     GRID_INFO_T      grid;
@@ -75,10 +75,7 @@ main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
     Setup_grid(&grid);
-    if (my_rank == 0) {
-        printf("What's the order of the matrices?\n");
-        scanf("%d", &n);
-    }
+    n = strtod(argv[1], NULL);
 
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     n_bar = n/grid.q;
@@ -107,6 +104,7 @@ main(int argc, char* argv[]) {
     Free_local_matrix(&local_C);
 
     MPI_Finalize();
+    return 0;
 }  /* main */
 
 
@@ -236,9 +234,7 @@ void Read_matrix(
     float*     temp;
     MPI_Status status;
     
-    if (grid->my_rank == 0) {
         temp = (float*) malloc(Order(local_A)*sizeof(float));
-        printf("%s\n", prompt);
         fflush(stdout);
         for (mat_row = 0;  mat_row < n; mat_row++) {
             grid_row = mat_row/Order(local_A);
@@ -246,24 +242,11 @@ void Read_matrix(
             for (grid_col = 0; grid_col < grid->q; grid_col++) {
                 coords[1] = grid_col;
                 MPI_Cart_rank(grid->comm, coords, &dest);
-                if (dest == 0) {
                     for (mat_col = 0; mat_col < Order(local_A); mat_col++)
-                        scanf("%f", 
-                          (local_A->entries)+mat_row*Order(local_A)+mat_col);
-                } else {
-                    for(mat_col = 0; mat_col < Order(local_A); mat_col++)
-                        scanf("%f", temp + mat_col);
-                    MPI_Send(temp, Order(local_A), MPI_FLOAT, dest, 0,
-                        grid->comm);
-                }
+                          Entry(local_A, mat_row, mat_col) = n * mat_row + mat_col;
             }
         }
         free(temp);
-    } else {
-        for (mat_row = 0; mat_row < Order(local_A); mat_row++) 
-            MPI_Recv(&Entry(local_A, mat_row, 0), Order(local_A), 
-                MPI_FLOAT, 0, 0, grid->comm, &status);
-    }
                      
 }  /* Read_matrix */
 

@@ -4,14 +4,14 @@ CXXFLAGS  = -g -Wall -std=c99 -Wextra
 
 INCLUDES =
 
-all: parallel_simpson serial_simpson ring_hello
+all: fox transpose
 
-butterfly: butterfly.cpp
+fox: fox.c
 	${MPICXX} $(CXXFLAGS)   $^ -o $@  
 	@printf 'Linked\n'
 
 clean: 	
-	rm -f *.o butterfly
+	rm -f *.o fox
 
 new: clean all
 
