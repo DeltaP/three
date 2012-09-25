@@ -31,7 +31,7 @@ typedef struct {
 } GRID_INFO_T;
 
 
-#define MAX 65536
+#define MAX 5308416
 typedef struct {
     int     n_bar;
 #define Order(A) ((A)->n_bar)
@@ -244,7 +244,6 @@ void Read_matrix(
     float*     temp;
     MPI_Status status;
     
-        temp = (float*) malloc(Order(local_A)*sizeof(float));
         fflush(stdout);
         for (mat_row = 0;  mat_row < n; mat_row++) {
             grid_row = mat_row/Order(local_A);
@@ -256,7 +255,6 @@ void Read_matrix(
                           Entry(local_A, mat_row, mat_col) = (n*mat_row + mat_col);
             }
         }
-        free(temp);
                      
 }  /* Read_matrix */
 

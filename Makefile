@@ -1,8 +1,6 @@
-MPICXX=mpicxx
+MPICXX=mpicc
 CXX=g++
-CXXFLAGS  = -g -Wall -std=c99 -Wextra
-
-INCLUDES =
+CXXFLAGS  = -g -Wall -std=c99 -Wextra -DEBUG
 
 all: fox transpose
 
@@ -11,6 +9,10 @@ fox: fox.c
 	@printf 'Linked\n'
 
 transpose: transpose.cpp
+	${MPICXX} $(CXXFLAGS)   $^ -o $@  
+	@printf 'Linked\n'
+
+mpi_mat_vect_time: mpi_mat_vect_time.c
 	${MPICXX} $(CXXFLAGS)   $^ -o $@  
 	@printf 'Linked\n'
 
