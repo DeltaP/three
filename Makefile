@@ -10,8 +10,12 @@ fox: fox.c
 	${MPICXX} $(CXXFLAGS)   $^ -o $@  
 	@printf 'Linked\n'
 
+transpose: transpose.cpp
+	${MPICXX} $(CXXFLAGS)   $^ -o $@  
+	@printf 'Linked\n'
+
 clean: 	
-	rm -f *.o fox
+	rm -f *.o fox transpose
 
 new: clean all
 
