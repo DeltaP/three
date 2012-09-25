@@ -1,3 +1,11 @@
 *.dSYM
 *.aux
 *.ps
+
+Log
+Out
+
+fox
+transpose
+test
+mpi_mat_vect_time
