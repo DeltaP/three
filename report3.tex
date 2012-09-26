@@ -61,7 +61,7 @@ Figure(\ref{fig:allgather}) which demonstrates that my implementation of the all
   \texttt{0.268992 0.581220 \\}
   \texttt{0.840188 0.394383 \\}
 
-  \texttt{The matrix B}
+  \texttt{The matrix B\\}
   \texttt{0.089854 0.066885 \\}
   \texttt{0.783099 0.798440 \\}
 
@@ -88,9 +88,9 @@ For timings there are two tests that we are interested in:
     \end{itemize}
 \end{enumerate}
 
-The first test checks how the algorithms scale with more processors.  The second test checks how the algorithms scale with the problem size.  To produce the timing data I ran on Gordon and executed the matrix multiplication 100 times.  Depending on the run there was need for anywhere between 0 and 2 warm up runs so I threw out the first two timings across the board.
+The first test checks how the algorithms timings scale with more processors.  The second test checks how the algorithms scale with the problem size.  To produce the timing data I ran on Gordon and executed the matrix multiplication 100 times.  Depending on the run there was need for anywhere between 0 and 2 warm up runs so I threw out the first two timings across the board.
 
-The results from the first test, Figure(\ref{fig:fixedmatrix}), show that as you add more processors the communication overhead for the all gather algorithm kills its performance and causes the time to completion to grow as more processors are added.  In contrast, the Fox algorithm has a very low communication overhead so adding more cores increases performance, decreasing time to completion.  There are a few nuanced details of Figure(\ref{fig:fixedmatrix}).  It appears that both algorithms scale similarly for 4 and 16 cores.  This is because the nodes on Gordon have 16 cores and communication on a single node is very fast.  For more than 16 cores the program has to communicate over the infinibad which is much slower; in this regime the Fox algorithm becomes a factor of 10 faster on 64 cores compared to 4 cores and Allgather becomes a factor of 10 slower on 72 cores compared to 4 cores.
+The results from the first test, Figure(\ref{fig:fixedmatrix}), show that as you add more processors the communication overhead for the all gather algorithm kills its performance and causes the time to completion to grow as more processors are added.  In contrast, the Fox algorithm has a very low communication overhead so adding more cores increases performance, decreasing time to completion.  There are a few nuanced details of Figure(\ref{fig:fixedmatrix}).  It appears that both algorithms scale similarly for 4 and 16 cores.  This is because the nodes on Gordon have 16 cores and communication on a single node is very fast.  For more than 16 cores the program has to communicate over the infinibad which is much slower; in this regime the Fox algorithm becomes a factor of 10 faster on 64 cores compared to 4 cores and Allgather becomes a factor of 10 slower on 72 cores compared to 4 cores.  As a result the net speed difference between the two algorithms is approximately a factor of 100 for the largest number of cores used in this test.
 
 \begin{figure}[htpb]
   \centering
@@ -99,7 +99,7 @@ The results from the first test, Figure(\ref{fig:fixedmatrix}), show that as you
   \label{fig:fixedmatrix}
 \end{figure}
 
-The results from the second test, Figure(\ref{fig:fixedcores}), show that as you increase the problem size both the Allgather and the Fox algorithm have a slower time to get the result.  The scaling for both algorithms is roughly the same, however for all problem sizes the Fox algorithm is faster than the Allgather algorithm.  For small problem sizes the fox algorithm is much faster while increasing the problem size closes the performance gap between the two algorithms.
+The results from the second test, Figure(\ref{fig:fixedcores}), show that as you increase the problem size both the Allgather and the Fox algorithm have a slower time to get the result.  The scaling for both algorithms is roughly the same, however for all problem sizes the Fox algorithm is faster than the Allgather algorithm.  For small problem sizes the fox algorithm is much faster while increasing the problem size closes the performance gap between the two algorithms.  This behavior again follows form the Fox's algorithms minimizing of communication time.  For small problems the communication intensive Allgather algorithm is spending a lot of time passing partial results.  For larger problem sizes both algorithms are limited not by latency but by throughput and computation and thus the difference in times caused mostly by latency of the Allgather methods n Allgathers begins to close.
 
 \begin{figure}[htpb]
   \centering
