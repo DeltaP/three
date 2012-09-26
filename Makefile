@@ -1,4 +1,4 @@
-MPICXX=mpicc
+MPICXX=mpicxx
 CXX=g++
 CXXFLAGS  = -g -Wall -std=c99 -Wextra -DEBUG
 

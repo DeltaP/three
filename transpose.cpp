@@ -15,8 +15,9 @@
 // -----------------------------------------------------------------
 // the main program
 int main(int argc, char *argv[]) {
-  int i, j, count, my_rank, comm_sz;
+  int i, j, count, my_rank, comm_sz, len;
   int a[3][3], b[3][3];
+  char name[MPI_MAX_PROCESSOR_NAME];
 
   MPI_Datatype col;
 
@@ -27,6 +28,7 @@ int main(int argc, char *argv[]) {
   MPI_Type_vector(3, 1, 3, MPI_INT, &col);
   MPI_Type_commit(&col);
 
+
   count = 0;
   if (my_rank == 0) {
     for (i = 0; i < 3; i++) {
@@ -35,6 +37,10 @@ int main(int argc, char *argv[]) {
         count++;
       }
     }
+
+    MPI_Get_processor_name(name, &len);
+    printf("Processor name:  %s\n",name);
+    fflush(stdout);
     printf("A =\n");
     for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {
@@ -42,6 +48,7 @@ int main(int argc, char *argv[]) {
       }
       printf("\n");
     }
+    printf("\n");
 
     for (i = 0; i < 3; i++) {
       MPI_Send(&a[0][i], 1, col, 1, 0, MPI_COMM_WORLD);
@@ -51,6 +58,9 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < 3; i++) {
       MPI_Recv(b[i], 3, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
+    MPI_Get_processor_name(name, &len);
+    printf("Processor name:  %s\n",name);
+    fflush(stdout);
     printf("Transpose(A) =\n");
     for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {

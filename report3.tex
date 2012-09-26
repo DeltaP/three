@@ -14,10 +14,12 @@
 For this problem we have an nxn matrix $A$ stored on processor 0 and we want to send $A^T$ to processor 1.  In this problem I made the matrix elements integers.  I performed the transpose by using the MPI derived data type MPI\_Type\_Vector.  This derived data type easily allows you to store a column of a matrix by setting the data types length to n and stride to n.  I chose to call this data type `col'.  To send the transpose of the matrix to processor one it is necessary to send the column data type and receive it as a row.  Thus the MPI\_Send will use the derived data type, however the MPI\_Recv will just receive n integers as a row.  Testing this program was simple, I just generated the output shown in Figure(\ref{fig:transpose}) which is correct.
 
 \begin{figure}[htpb]
+  \texttt{Processor name:  econ3-52-8-dhcp.int.colorado.edu\\}
   \texttt{A =\\}
   \texttt{0 1 2 \\}
   \texttt{3 4 5 \\}
-  \texttt{6 7 8 \\}
+  \texttt{6 7 8 \\\\}
+  \texttt{Processor name:  econ3-52-8-dhcp.int.colorado.edu\\}
   \texttt{Transpose(A) =\\}
   \texttt{0 3 6 \\}
   \texttt{1 4 7 \\}
